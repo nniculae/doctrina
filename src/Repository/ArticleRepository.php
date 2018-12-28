@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Article;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 /**
@@ -19,22 +20,18 @@ class ArticleRepository extends ServiceEntityRepository
         parent::__construct($registry, Article::class);
     }
 
-    public function findAllWithCategoriesAndTags()
+    /**
+     * @return QueryBuilder
+     */
+    public function findAllWithCategoriesAndTags(): QueryBuilder
     {
         return $this->createQueryBuilder('a')
             ->addSelect(['c', 't'])
             ->leftJoin('a.category', 'c')
-            ->leftJoin('a.tags', 't')
-            ->getQuery()
-            ->getResult();
+            ->leftJoin('a.tags', 't');
     }
 
-    /*
-     * $sequence_runs=$repository->createQueryBuilder('sr')->addSelect(['mts', 'fu'])
-->leftJoin('sr.materialTypeString', 'mts')
-->leftJoin('sr.users', 'fu')
-->getQuery()->getResult();
-     */
+
     // /**
     //  * @return Article[] Returns an array of Article objects
     //  */
