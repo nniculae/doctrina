@@ -15,7 +15,7 @@ class ArticleFixture extends BaseFixture implements DependentFixtureInterface
         for ($i = 0; $i < BaseFixture::NUMBER_OF_ARTICLES; $i++) {
             $article = new Article();
             $article->setTitle($this->faker->sentence);
-            $article->setContent($this->faker->sentence(10));
+            $article->setContent($this->faker->text(1310));
             $article->setPulishedAt($this->faker->dateTimeBetween('-2 years', 'now'));
             $this->addCategory($article);
             $this->addTags($article);

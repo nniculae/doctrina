@@ -19,6 +19,22 @@ class ArticleRepository extends ServiceEntityRepository
         parent::__construct($registry, Article::class);
     }
 
+    public function findAllWithCategoriesAndTags()
+    {
+        return $this->createQueryBuilder('a')
+            ->addSelect(['c', 't'])
+            ->leftJoin('a.category', 'c')
+            ->leftJoin('a.tags', 't')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /*
+     * $sequence_runs=$repository->createQueryBuilder('sr')->addSelect(['mts', 'fu'])
+->leftJoin('sr.materialTypeString', 'mts')
+->leftJoin('sr.users', 'fu')
+->getQuery()->getResult();
+     */
     // /**
     //  * @return Article[] Returns an array of Article objects
     //  */
@@ -35,7 +51,6 @@ class ArticleRepository extends ServiceEntityRepository
         ;
     }
     */
-
     /*
     public function findOneBySomeField($value): ?Article
     {

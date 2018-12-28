@@ -34,12 +34,12 @@ class Article
     private $pulishedAt;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="articles")
+     * @ORM\ManyToOne(targetEntity="App\Entity\Category", inversedBy="articles", fetch="EXTRA_LAZY")
      */
     private $category;
 
     /**
-     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="articles")
+     * @ORM\ManyToMany(targetEntity="App\Entity\Tag", inversedBy="articles", fetch="EXTRA_LAZY" )
      */
     private $tags;
 
