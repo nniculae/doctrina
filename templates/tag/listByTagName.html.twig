@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Articles{% endblock %}
+
+{% block body %}
+
+    {% for article in articles %}
+        <h3>{{ article.title }}</h3>
+    {% else %}
+        <h3><em>No article found</em></h3>
+    {% endfor %}
+
+
+{% endblock %}

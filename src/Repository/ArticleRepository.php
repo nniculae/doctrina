@@ -6,6 +6,8 @@ use App\Entity\Article;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\RegistryInterface;
+use Knp\Component\Pager\PaginatorInterface;
+use Knp\Component\Pager\Pagination\PaginationInterface as PagerPaginationInterface;
 
 /**
  * @method Article|null find($id, $lockMode = null, $lockVersion = null)
@@ -15,20 +17,38 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  */
 class ArticleRepository extends ServiceEntityRepository
 {
-    public function __construct(RegistryInterface $registry)
+    /** @var PaginatorInterface */
+    private $paginator;
+
+    public function __construct(RegistryInterface $registry, PaginatorInterface $paginator)
     {
         parent::__construct($registry, Article::class);
+        $this->paginator = $paginator;
     }
 
-    /**
-     * @return QueryBuilder
-     */
-    public function findAllWithCategoriesAndTags(): QueryBuilder
+    public function findAllPaginated(int $pageNumber, int $limitPerPage = 10): PagerPaginationInterface
     {
-        return $this->createQueryBuilder('a')
+        $qb = $this->createQueryBuilder('a')
             ->addSelect(['c', 't'])
             ->leftJoin('a.category', 'c')
-            ->leftJoin('a.tags', 't');
+            ->leftJoin('a.tags', 't')
+            ->orderBy('a.pulishedAt', 'DESC');
+        $pagination = $this->paginator->paginate(
+            $qb,
+            $pageNumber,
+            $limitPerPage
+        );
+        return $pagination;
+    }
+
+    public function ListArticlesByTagName(string $tagName)
+    {
+        return $this->createQueryBuilder('a')
+            ->innerJoin('a.tags', 't')
+            ->andWhere('t.name = :tagName')
+            ->setParameter('tagName', $tagName)
+            ->getQuery()
+            ->getResult();
     }
 
 

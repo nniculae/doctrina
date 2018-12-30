@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Repository\ArticleRepository;
-//use Knp\Component\Pager\Pagination\PaginationInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,6 +11,7 @@ use Knp\Component\Pager\PaginatorInterface;
 
 class ArticleController extends AbstractController
 {
+
     /**
      * @Route("/articles", name="article_list")
      * @param Request $request
@@ -21,14 +21,25 @@ class ArticleController extends AbstractController
      */
     public function list(Request $request, ArticleRepository $articleRepository, PaginatorInterface $paginator):Response
     {
-        $qb = $articleRepository->findAllWithCategoriesAndTags();
-        $pagination = $paginator->paginate(
-            $qb, /* query NOT result */
-            $request->query->getInt('page', 1)/*page number*/,
-            3/*limit per page*/
-        );
+        $pageNumber = $request->query->getInt('page', 1);/*page number*/
+        $pagination = $articleRepository->findAllPaginated($pageNumber,10);
+
         return $this->render('article/list.html.twig', [
             'pagination' => $pagination,
         ]);
+    }
+
+    /**
+     * @Route("/{tagName}", name="article_by_tag_name")
+     */
+    public function ListArticlesByTagName(string $tagName, ArticleRepository $articleRepository ):Response
+    {
+
+        $articles = $articleRepository->ListArticlesByTagName($tagName);
+
+        return $this->render('tag/listByTagName.html.twig',[
+            'articles' => $articles
+        ]);
+
     }
 }

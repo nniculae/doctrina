@@ -3,17 +3,18 @@
 {% block title %}Articles{% endblock %}
 
 {% block body %}
-    <h1>Articles : Count({{ pagination.getTotalItemCount }})</h1>
+    <h1>Articles : Count({{ pagination.getTotalItemCount() }})</h1>
 
         {% for article in pagination %}
             <h3>{{ article.title }}</h3>
-            <p>{{ article.content }}</p>
+            <p>Published at: {{ article.pulishedAt |date }}</p>
+            {#<p>{{ article.content }}</p>#}
 
             <h5>Category: {{ article.category.name }}</h5>
             <div>
-                {% set tags = article.tags  %}
+
                 <h5>Tags:
-                    {% for tag in tags %}
+                    {% for tag in article.tags %}
                         {{ tag.name }}{{ not loop.last ? ',' }}
                     {% endfor %}
                 </h5>
