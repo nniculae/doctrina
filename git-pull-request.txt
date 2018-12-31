@@ -3,3 +3,4 @@ touch fileA.txt
 git add fileA.txt
 git commit -m "Added featureX"
 git push --set-upstream origin featureX
+git push -d origin featureX (delete the remote branch label)
