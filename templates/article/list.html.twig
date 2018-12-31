@@ -5,22 +5,47 @@
 {% block body %}
     <h1>Articles : Count({{ pagination.getTotalItemCount() }})</h1>
 
-        {% for article in pagination %}
-            <h3>{{ article.title }}</h3>
-            <p>Published at: {{ article.pulishedAt |date }}</p>
-            {#<p>{{ article.content }}</p>#}
+    {% for article in pagination %}
+        <h3>{{ article.title }} </h3>
+        <p>Published at: {{ article.pulishedAt |date }}</p>
+        {#<p>{{ article.content }}</p>#}
 
-            <h5>Category: {{ article.category.name }}</h5>
-            <div>
+        <h5>Category: {{ article.category.name }}</h5>
+        <div>
 
-                <h5>Tags:
-                    {% for tag in article.tags %}
-                        {{ tag.name }}{{ not loop.last ? ',' }}
-                    {% endfor %}
-                </h5>
-            </div>
-            <hr>
-        {% endfor %}
+            <h5>Tags:
+                {% for tag in article.tags %}
+                    <span class="tag-parent">
+                    {{ tag.name }}{{ not loop.last ? ',' }}
+                        <a href="#" class="js-remove-tag"
+                           data-url="{{ path('remove_tag_from_article', {articleId:article.id, tagId: tag.id}) }}">Del</a>
+                        </span>
+                {% endfor %}
+            </h5>
+        </div>
+        <hr>
+    {% endfor %}
 
- {{ knp_pagination_render(pagination) }}
+    {{ knp_pagination_render(pagination) }}
+
+
+    <script>
+        jQuery(document).ready(function () {
+            $('.js-remove-tag').on('click', function (e) {
+                e.preventDefault();
+
+                var tag_parent = $(this).closest('.tag-parent');
+                console.log(tag_parent);
+
+                $.ajax({
+                    url: $(this).data('url'),
+                    method: 'DELETE'
+                }).done(function () {
+                    tag_parent.fadeOut();
+                });
+
+
+            });
+        });
+    </script>
 {% endblock %}

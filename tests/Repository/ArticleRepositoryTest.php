@@ -25,6 +25,16 @@ class ArticleRepositoryTest extends KernelTestCase
         $this->assertNotNull($articles[0]->getTags());
     }
 
+    public function testListArticlesByTagNameExpr()
+    {
+
+        $articles = $this->entityManager
+            ->getRepository(Article::class)
+            ->listArticlesByTagNameExpr('porro');
+        $this->assertCount(8,$articles);
+
+    }
+
     /**
      * {@inheritDoc}
      */

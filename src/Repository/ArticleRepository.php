@@ -4,7 +4,8 @@ namespace App\Repository;
 
 use App\Entity\Article;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\QueryBuilder;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\Query\Expr;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Knp\Component\Pager\Pagination\PaginationInterface as PagerPaginationInterface;
@@ -28,17 +29,17 @@ class ArticleRepository extends ServiceEntityRepository
 
     public function findAllPaginated(int $pageNumber, int $limitPerPage = 10): PagerPaginationInterface
     {
+        $criteria = Criteria::create()->orderBy(['a.pulishedAt' => Criteria::DESC]);
         $qb = $this->createQueryBuilder('a')
             ->addSelect(['c', 't'])
             ->leftJoin('a.category', 'c')
             ->leftJoin('a.tags', 't')
-            ->orderBy('a.pulishedAt', 'DESC');
-        $pagination = $this->paginator->paginate(
+            ->addCriteria($criteria);
+        return $this->paginator->paginate(
             $qb,
             $pageNumber,
             $limitPerPage
         );
-        return $pagination;
     }
 
     public function ListArticlesByTagName(string $tagName)
@@ -50,6 +51,23 @@ class ArticleRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function listArticlesByTagNameExpr(string $tagName)
+    {
+        $qb = $this->createQueryBuilder('a');
+        return $qb
+            ->innerJoin('a.tags', 't')
+            ->andWhere($qb->expr()->eq('t.name', ':tagName'))
+//            ->andWhere(new Expr\Comparison('t.name', Expr\Comparison::EQ, ':tagName'))
+            ->setParameters(['tagName' => $tagName])
+            ->orderBy($qb->expr()->desc('a.title'))
+//            ->orderBy(new Expr\OrderBy('a.title', Criteria::DESC))
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
 
 
     // /**
