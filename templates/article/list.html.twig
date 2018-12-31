@@ -13,7 +13,7 @@
         <h5>Category: {{ article.category.name }}</h5>
         <div>
 
-            <h5>Tags:
+            <h5>Tags: ({{ article.tags | length }})
                 {% for tag in article.tags %}
                     <span class="tag-parent">
                     {{ tag.name }}{{ not loop.last ? ',' }}
